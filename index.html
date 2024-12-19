@@ -56,55 +56,27 @@
             background-color: #ffc107;
         }
 
-        /* Container for the sections */
-        .locator-container {
+        .image-container {
+            position: relative;
             width: 80%;
-            height: 70%;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 20px;
+            max-width: 800px;
         }
 
-        /* Each section */
-        .section {
-            background-color: #2c3e50;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 8px;
-            color: white;
-            transition: background-color 0.3s ease;
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
         }
 
-        /* Highlighted section */
-        .highlight {
-            background-color: #e74c3c; /* Red color for highlighted sections */
-        }
-
-        /* Specific style for the first section (top-left) */
-        .section-1 {
-            grid-column: span 2;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-        }
-
-        /* Each subsection inside section 1 */
-        .subsection {
-            background-color: #34495e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 5px;
-            color: white;
-            transition: background-color 0.3s ease;
-        }
-
-        /* Highlighted subsection */
-        .highlight-subsection {
-            background-color: #e74c3c; /* Red color for highlighted subsections */
+        .dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: transparent;
+            border: 3px solid red;
+            display: none; /* Initially hidden */
+            pointer-events: none;
         }
     </style>
 </head>
@@ -115,54 +87,33 @@
         <button onclick="searchCategory()">Search</button>
     </div>
 
-    <div class="locator-container">
-        <!-- Section 1: Divided into 4 subsections -->
-        <div class="section section-1">
-            <div class="subsection" id="locator-1">Locator 1</div>
-            <div class="subsection" id="locator-2">Locator 2</div>
-            <div class="subsection" id="locator-3">Locator 3</div>
-            <div class="subsection" id="locator-4">Locator 4</div>
-        </div>
+    <div class="image-container">
+        <!-- Insert the inventory map -->
+        <img src="/mnt/data/Screenshot 2024-12-19 214813.png" alt="PCS Stock Inventory">
         
-        <!-- Section 2 -->
-        <div class="section" id="section-2">Section 2</div>
-
-        <!-- Section 3 -->
-        <div class="section" id="section-3">Section 3</div>
-
-        <!-- Section 4 -->
-        <div class="section" id="section-4">Section 4</div>
-
-        <!-- Section 5 -->
-        <div class="section" id="section-5">Section 5</div>
-
-        <!-- Section 6 -->
-        <div class="section" id="section-6">Section 6</div>
-
-        <!-- Section 7 -->
-        <div class="section" id="section-7">Section 7</div>
-
-        <!-- Section 8 -->
-        <div class="section" id="section-8">Section 8</div>
+        <!-- Dots (placeholders for red circles) -->
+        <div id="dot-D" class="dot" style="top: 10%; left: 20%;"></div>
+        <div id="dot-E" class="dot" style="top: 10%; left: 30%;"></div>
+        <div id="dot-H" class="dot" style="top: 10%; left: 40%;"></div>
+        <div id="dot-N" class="dot" style="top: 10%; left: 50%;"></div>
+        <div id="dot-A" class="dot" style="top: 70%; left: 10%;"></div>
+        <!-- Add similar <div> elements for all other points -->
     </div>
 
     <script>
-        // Inventory data with section and locator details
+        // Inventory data with category codes and area mappings
         const inventory = [
-            { categoryCode: 'A123', section: 'Section 1', locator: 'Locator 1' },
-            { categoryCode: 'B456', section: 'Section 2', locator: 'Locator 2' },
-            { categoryCode: 'C789', section: 'Section 3', locator: 'Locator 3' }
+            { categoryCode: 'A123', area: 'D' },
+            { categoryCode: 'B456', area: 'E' },
+            { categoryCode: 'C789', area: 'H' }
+            // Add more category codes and areas as needed
         ];
 
-        // Function to reset highlighting
+        // Function to reset highlights
         function resetHighlights() {
-            // Remove highlight from all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('highlight');
-            });
-            // Remove highlight from all subsections in Section 1
-            document.querySelectorAll('.subsection').forEach(subsection => {
-                subsection.classList.remove('highlight-subsection');
+            // Hide all red circles (dots)
+            document.querySelectorAll('.dot').forEach(dot => {
+                dot.style.display = 'none';
             });
         }
 
@@ -174,17 +125,13 @@
             if (categoryCode) {
                 const item = inventory.find(i => i.categoryCode.toLowerCase() === categoryCode.toLowerCase());
                 if (item) {
-                    // Highlight the matching section or subsection
-                    if (item.section === 'Section 1') {
-                        // Highlight the subsection within Section 1
-                        const locatorId = `locator-${item.locator.split(' ')[1]}`;
-                        document.getElementById(locatorId).classList.add('highlight-subsection');
-                    } else {
-                        // Highlight the entire section
-                        const sectionId = `section-${item.section.split(' ')[1]}`;
-                        document.getElementById(sectionId).classList.add('highlight');
+                    // Highlight the corresponding dot
+                    const dotId = `dot-${item.area}`;
+                    const dot = document.getElementById(dotId);
+                    if (dot) {
+                        dot.style.display = 'block'; // Show the red circle
                     }
-                    alert(`Item found in ${item.section} at ${item.locator}`);
+                    alert(`Item found in area ${item.area}`);
                 } else {
                     alert('Item not found!');
                 }
