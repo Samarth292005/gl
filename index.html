@@ -75,6 +75,12 @@
             align-items: center;
             border-radius: 8px;
             color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Highlighted section */
+        .highlight {
+            background-color: #e74c3c; /* Red color for highlighted sections */
         }
 
         /* Specific style for the first section (top-left) */
@@ -93,8 +99,13 @@
             align-items: center;
             border-radius: 5px;
             color: white;
+            transition: background-color 0.3s ease;
         }
 
+        /* Highlighted subsection */
+        .highlight-subsection {
+            background-color: #e74c3c; /* Red color for highlighted subsections */
+        }
     </style>
 </head>
 <body>
@@ -107,32 +118,32 @@
     <div class="locator-container">
         <!-- Section 1: Divided into 4 subsections -->
         <div class="section section-1">
-            <div class="subsection">Locator 1</div>
-            <div class="subsection">Locator 2</div>
-            <div class="subsection">Locator 3</div>
-            <div class="subsection">Locator 4</div>
+            <div class="subsection" id="locator-1">Locator 1</div>
+            <div class="subsection" id="locator-2">Locator 2</div>
+            <div class="subsection" id="locator-3">Locator 3</div>
+            <div class="subsection" id="locator-4">Locator 4</div>
         </div>
         
         <!-- Section 2 -->
-        <div class="section">Section 2</div>
+        <div class="section" id="section-2">Section 2</div>
 
         <!-- Section 3 -->
-        <div class="section">Section 3</div>
+        <div class="section" id="section-3">Section 3</div>
 
         <!-- Section 4 -->
-        <div class="section">Section 4</div>
+        <div class="section" id="section-4">Section 4</div>
 
         <!-- Section 5 -->
-        <div class="section">Section 5</div>
+        <div class="section" id="section-5">Section 5</div>
 
         <!-- Section 6 -->
-        <div class="section">Section 6</div>
+        <div class="section" id="section-6">Section 6</div>
 
         <!-- Section 7 -->
-        <div class="section">Section 7</div>
+        <div class="section" id="section-7">Section 7</div>
 
         <!-- Section 8 -->
-        <div class="section">Section 8</div>
+        <div class="section" id="section-8">Section 8</div>
     </div>
 
     <script>
@@ -143,12 +154,36 @@
             { categoryCode: 'C789', section: 'Section 3', locator: 'Locator 3' }
         ];
 
+        // Function to reset highlighting
+        function resetHighlights() {
+            // Remove highlight from all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('highlight');
+            });
+            // Remove highlight from all subsections in Section 1
+            document.querySelectorAll('.subsection').forEach(subsection => {
+                subsection.classList.remove('highlight-subsection');
+            });
+        }
+
         // Search function
         function searchCategory() {
             const categoryCode = document.getElementById('categoryCode').value.trim();
+            resetHighlights(); // Reset any previous highlights
+
             if (categoryCode) {
                 const item = inventory.find(i => i.categoryCode.toLowerCase() === categoryCode.toLowerCase());
                 if (item) {
+                    // Highlight the matching section or subsection
+                    if (item.section === 'Section 1') {
+                        // Highlight the subsection within Section 1
+                        const locatorId = `locator-${item.locator.split(' ')[1]}`;
+                        document.getElementById(locatorId).classList.add('highlight-subsection');
+                    } else {
+                        // Highlight the entire section
+                        const sectionId = `section-${item.section.split(' ')[1]}`;
+                        document.getElementById(sectionId).classList.add('highlight');
+                    }
                     alert(`Item found in ${item.section} at ${item.locator}`);
                 } else {
                     alert('Item not found!');
