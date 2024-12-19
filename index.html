@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCS INFRAGOLD Locator</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body {
             margin: 0;
@@ -11,31 +12,24 @@
             background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: white;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
             height: 100vh;
-        }
-
-        .container {
-            text-align: center;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 20px 40px;
-            border-radius: 10px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            padding-top: 20px;
         }
 
         h1 {
-            font-size: 2.5em;
+            font-size: 2em;
             font-weight: bold;
-            margin-bottom: 20px;
             text-transform: uppercase;
             color: #ffeb3b;
+            margin-bottom: 10px;
         }
 
         .search-bar {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         input[type="text"] {
@@ -63,24 +57,56 @@
             background-color: #ffc107;
         }
 
+        #map {
+            height: 70%;
+            width: 90%;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>PCS INFRAGOLD</h1>
-        <p>Enter the category code below to locate your item:</p>
-        <div class="search-bar">
-            <input type="text" id="categoryCode" placeholder="Enter Category Code">
-            <button onclick="searchCategory()">Search</button>
-        </div>
+    <h1>PCS INFRAGOLD Locator</h1>
+    <div class="search-bar">
+        <input type="text" id="categoryCode" placeholder="Enter Category Code">
+        <button onclick="searchCategory()">Search</button>
     </div>
+    <div id="map"></div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // Inventory data with map coordinates
+        const inventory = [
+            { categoryCode: 'A123', location: 'Shelf 1, Row 2', lat: 28.6139, lng: 77.209 },
+            { categoryCode: 'B456', location: 'Shelf 3, Row 4', lat: 28.614, lng: 77.215 },
+            { categoryCode: 'C789', location: 'Shelf 5, Row 1', lat: 28.616, lng: 77.220 }
+        ];
+
+        // Initialize the map
+        const map = L.map('map').setView([28.6139, 77.209], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add markers for all items in the inventory
+        const markers = {};
+        inventory.forEach(item => {
+            const marker = L.marker([item.lat, item.lng]).addTo(map)
+                .bindPopup(`<b>${item.categoryCode}</b><br>${item.location}`);
+            markers[item.categoryCode] = marker;
+        });
+
+        // Search function
         function searchCategory() {
-            const categoryCode = document.getElementById('categoryCode').value;
+            const categoryCode = document.getElementById('categoryCode').value.trim();
             if (categoryCode) {
-                alert(`Searching for category code: ${categoryCode}`);
-                // Add logic to call backend API or perform action
+                const item = inventory.find(i => i.categoryCode.toLowerCase() === categoryCode.toLowerCase());
+                if (item) {
+                    map.setView([item.lat, item.lng], 16); // Zoom to the item's location
+                    markers[item.categoryCode].openPopup(); // Open marker popup
+                } else {
+                    alert('Item not found!');
+                }
             } else {
                 alert('Please enter a category code!');
             }
