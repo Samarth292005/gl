@@ -154,3 +154,6 @@
     </script>
 </body>
 </html>
+# Output
+
+![Screenshot 2024-12-19 214813](https://github.com/user-attachments/assets/76162770-c45d-4cab-8e12-ba0ccb5e1e04)
