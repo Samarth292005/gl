@@ -98,7 +98,7 @@
 </head>
 <body>
     <h1>Image Test</h1>
-    <img src="pcs inventory.jpg" alt="Test Image">
+    <img src="![Screenshot 2024-12-19 214813](https://github.com/user-attachments/assets/865c45b6-8c2d-4dd9-b1cb-1cdd3e69714d)" alt="Test Image">
 </body>
 </html>
 
